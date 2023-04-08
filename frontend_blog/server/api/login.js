@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-    const { email, password } = await readBody(event)
+    const { username, password } = await readBody(event)
 
     const { webHost } = useRuntimeConfig()
 
@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
     // const { data } = await $fetch(url, {
     //     method: "post",
     //     body: {
-    //         email: email,
+    //         username: username,
     //         password: password,
     //     }
     // })
