@@ -1,5 +1,3 @@
-from enum import unique
-
 from django.contrib.auth import get_user_model, authenticate, login
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -25,6 +23,10 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         instance = USER.objects.create_user(**validated_data)
+
+        request = self.context["request"]
+        login(request, instance)
+
         return instance
 
 
