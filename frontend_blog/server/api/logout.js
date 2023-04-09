@@ -13,4 +13,6 @@ export default defineEventHandler(async (event) => {
             "cookie": `sessionid=${cookie}`
         }
     })
+
+    return { data: response.data }
 })
