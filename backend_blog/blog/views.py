@@ -1,5 +1,5 @@
 from rest_framework.generics import ListCreateAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView, \
-    RetrieveUpdateDestroyAPIView
+    RetrieveUpdateDestroyAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from blog.models import Blog, Comment
@@ -15,7 +15,7 @@ class ListCreateBlogView(ListCreateAPIView):
         return Blog.objects.exclude(delete=True)
 
 
-class RetrieveUpdateDestroyBlogView(RetrieveUpdateDestroyAPIView):
+class UpdateDestroyBlogView(UpdateAPIView, DestroyAPIView):
     serializer_class = BlogSerializer
     permission_classes = [IsOwner]
 
@@ -26,6 +26,14 @@ class RetrieveUpdateDestroyBlogView(RetrieveUpdateDestroyAPIView):
         instance.delete = True
         instance.save()
         return instance
+
+
+class RetrieveBlogView(RetrieveAPIView):
+    serializer_class = BlogSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Blog.objects.exclude(delete=True)
 
 
 class CreateCommentView(CreateAPIView):

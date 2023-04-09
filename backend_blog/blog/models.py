@@ -11,6 +11,7 @@ class Blog(models.Model):
     theme = models.CharField(max_length=100, default='')
     created = models.DateTimeField(auto_now_add=True)
     delete = models.BooleanField(default=False)
+    author_name = models.CharField(max_length=50)
 
     def __str__(self):
         return self.title

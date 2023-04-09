@@ -51,3 +51,9 @@ class AuthenticationSerializer(serializers.ModelSerializer):
         login(request, user)
 
         return user
+
+
+class RetrieveUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = USER
+        fields = ['id', 'username']

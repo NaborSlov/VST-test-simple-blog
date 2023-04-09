@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from blog.models import Blog, Comment
+from core.serializers import RetrieveUserSerializer
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -25,6 +26,7 @@ class CommentDeleteUpdateSerializer(serializers.ModelSerializer):
 
 class BlogListCreateSerializer(serializers.ModelSerializer):
     current_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    user = RetrieveUserSerializer()
 
     class Meta:
         model = Blog
@@ -33,12 +35,13 @@ class BlogListCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         current_user = validated_data.pop("current_user")
-        instance = Blog.objects.create(**validated_data, user=current_user)
+        instance = Blog.objects.create(**validated_data, user=current_user, author_name=current_user.username)
         return instance
 
 
 class BlogSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)
+    user = RetrieveUserSerializer()
 
     class Meta:
         model = Blog

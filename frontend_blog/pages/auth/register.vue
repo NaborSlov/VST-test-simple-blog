@@ -1,7 +1,7 @@
 <template>
   <section class="bg-gray-50 dark:bg-gray-900">
     <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-      <NuxtLink :to="`/`">
+      <NuxtLink :to="`/auth/`">
         <p class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
           <img class="w-8 h-8 mr-2" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg" alt="logo">
           VTC-blog
@@ -13,7 +13,7 @@
           <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
             Create and account
           </h1>
-          <form class="space-y-4 md:space-y-6" action="#">
+          <form class="space-y-4 md:space-y-6" @submit.prevent="submitForm">
             <div>
               <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
                 username</label>
@@ -42,7 +42,7 @@
 
             <p class="text-sm font-light text-gray-500 dark:text-gray-400">
               Already have an account?
-              <NuxtLink :to="`/`">
+              <NuxtLink :to="`/auth/`">
                 <a href="#" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>
               </NuxtLink>
             </p>
@@ -54,37 +54,30 @@
   </section>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      username: '',
-      password: '',
-      confirm_password: '',
-    }
-  },
-  methods: {
-    async submitForm() {
-      try {
-        await $fetch('/api/register', {
-          method: 'post',
-          data: {
-            username: this.username,
-            password: this.password,
-            confirm_password: this.confirm_password,
-          }
-        })
+<script setup>
 
-        this.$router.push('/blogs')
+const username = ref('')
+const password = ref('')
+const confirm_password = ref('')
 
+async function submitForm() {
+  try {
+    await $fetch('/api/register', {
+      method: 'post',
+      body: {
+        username: username.value,
+        password: password.value,
+        confirm_password: confirm_password.value,
       }
-      catch (error) {
-        console.error(error)
-      }
-    }
+    })
+
+    navigateTo('/')
+
+  }
+  catch (error) {
+    console.error(error)  // написать ошибку
   }
 }
-
 
 definePageMeta({
   layout: ''

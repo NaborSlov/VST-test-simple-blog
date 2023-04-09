@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 
 from core.serializers import RegisterSerializer, AuthenticationSerializer
 
@@ -18,9 +19,9 @@ class UserAuthenticationView(CreateAPIView):
 
 
 class UserLogoutView(APIView):
-    http_method_names = ['delete']
+    http_method_names = ['get']
 
-    def delete(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         """
         Выход из сессии
         """

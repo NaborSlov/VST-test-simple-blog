@@ -1,12 +1,23 @@
+import axios from "axios";
+
 export default defineEventHandler(async (event) => {
     const { username, password } = await readBody(event)
     const { webHost } = useRuntimeConfig()
 
-    await $fetch(`${webHost}/login/`, {
+    const response = await axios({
         method: "post",
-        body: {
+        url: `${webHost}/login/`,
+        data: {
             username: username,
-            password: password,
+            password: password
         }
     })
+
+    const cookies = response.headers['set-cookie']
+    cookies.forEach(cookie => {
+        const [key, value] = cookie.split(';')[0].split('=')
+        setCookie(event, key, value)
+    })
+
+    return { data: response.data }
 })
