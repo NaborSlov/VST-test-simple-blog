@@ -5,24 +5,22 @@
                 <h2 class="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Главная
                     страница
                 </h2>
-                <button @click.prevent="logoutFunc"
-                    class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">Создать блог</button>
+                <NuxtLink to="/blogs/create">
+                    <button
+                        class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+                        Создать блог</button>
+                </NuxtLink>
             </div>
-            <div class="grid gap-8 lg:grid-cols-2">
+            <div class="grid gap-8 lg:grid-cols-1">
                 <article
                     class="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
-                    v-for="blog in blogs_one">
-                    <BlogCard :blog="blog" />
-                </article>
-                <article
-                    class="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
-                    v-for="blog in blogs_two">
+                    v-for="blog in response.data.results">
                     <BlogCard :blog="blog" />
                 </article>
             </div>
         </div>
         <footer>
-            <Pagination :data="data_pagination"/>
+            <Pagination :data="data_pagination" />
         </footer>
     </section>
 </template>
@@ -30,7 +28,7 @@
 <script setup>
 const cookie = useCookie('sessionid')  // Написать пагинацию, активные ссылки готовы
 
-const response = await $fetch(`/api/getBlog`, {
+const response = await $fetch(`/api/blogs/getBlog`, {
     method: "post",
     body: {
         cookie: cookie.value
@@ -40,12 +38,9 @@ const response = await $fetch(`/api/getBlog`, {
 if (response.auth === false) {
     navigateTo('/auth/')
 } if (response.error) {
-    createError()  // Написать страницу ошибок
+    throw createError()  // Написать страницу ошибок
 }
 
 const data_pagination = response.data
-const length_results = response.data.results.length / 2
-const blogs_one = response.data.results.slice(0, length_results)
-const blogs_two = response.data.results.slice(-length_results)
 
 </script>

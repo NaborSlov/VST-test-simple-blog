@@ -6,6 +6,7 @@ from core.serializers import RetrieveUserSerializer
 
 class CommentSerializer(serializers.ModelSerializer):
     current_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    user = RetrieveUserSerializer(read_only=True)
 
     class Meta:
         model = Comment
@@ -26,12 +27,12 @@ class CommentDeleteUpdateSerializer(serializers.ModelSerializer):
 
 class BlogListCreateSerializer(serializers.ModelSerializer):
     current_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    user = RetrieveUserSerializer()
+    user = RetrieveUserSerializer(read_only=True)
 
     class Meta:
         model = Blog
         exclude = ['delete']
-        extra_kwargs = {"user": {"read_only": True}}
+        extra_kwargs = {"author_name": {"read_only": True}}
 
     def create(self, validated_data):
         current_user = validated_data.pop("current_user")
