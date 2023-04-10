@@ -62,18 +62,17 @@ async function delBlog(id) {
     const cookie = useCookie('sessionid').value
     const csrf_token = useCookie('csrftoken').value
 
-    try {
-        await $fetch("/api/blogs/deleteBlog", {
-            method: "post",
-            body: {
-                id: id,
-                cookie: cookie,
-                csrf_token: csrf_token
-            }
-        })
-    }
-    catch (error) {
-        throw createError({ statusMessage: error.statusMessage, statusCode: error.statusCode, fatal: true })
+    const response = await $fetch("/api/blogs/deleteBlog", {
+        method: "post",
+        body: {
+            id: id,
+            cookie: cookie,
+            csrf_token: csrf_token
+        }
+    })
+
+    if (response.error) {
+        throw createError({ statusMessage: response.error, statusCode: 404, fatal: true })
     }
 
     navigateTo('/', { external: true })

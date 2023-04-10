@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
     let url = `${webHost}/api/blogs/update/${formData.id}/`
 
     try {
-        await axios({
+        const response = await axios({
             method: "delete",
             url: url,
             headers: {
@@ -16,10 +16,16 @@ export default defineEventHandler(async (event) => {
                 "x-csrftoken": formData.csrf_token,
             },
         })
+
+        return { response: response.data }
+
     }
     catch (error) {
-        throw createError({statusCode: error.response.status, statusMessage: error.response.statusMessage})
+        if (error.response !== undefined) {
+            if (error.response.status === 403) {
+                return { auth: false }
+            }
+        }
+        return { error: error.message }
     }
-
-    return { status: "ok" }
 })

@@ -25,13 +25,13 @@ export default defineEventHandler(async (event) => {
         return { data: data, auth: true }
     }
     catch (error) {
-        if (error.code === "ECONNREFUSED") {
-            console.error(error);
-            createError()  // написать ошибку под не работающий сервер
-        } if (error.response.status === 403) {
-            return { auth: false }
+        if (error.response !== undefined) {
+            if (error.response.status === 403) {
+                return { auth: false }
+            }
         }
-        return { error: error.response }
+
+        return { error: error.message }
     }
 })
 

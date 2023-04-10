@@ -55,10 +55,12 @@ async function createBlog() {
         }
     })
 
+    if (response.error) {
+        throw createError({ statusMessage: response.error, statusCode: 404, fatal: true })
+    }
+
     if (response.auth === false) {
         navigateTo('/auth/')
-    } if (response.error) {
-        createError()  // Написать страницу ошибок
     }
 
     navigateTo('/')

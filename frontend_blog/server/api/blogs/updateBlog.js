@@ -5,11 +5,11 @@ export default defineEventHandler(async (event) => {
     const formData = await readBody(event)
     const { webHost } = useRuntimeConfig()
 
-    let url = `${webHost}/api/blogs/`
+    let url = `${webHost}/api/blogs/update/${formData.blog_id}/`
 
     try {
         const { data } = await axios({
-            method: "post",
+            method: "patch",
             url: url,
             headers: {
                 "cookie": `sessionid=${formData.cookie};csrftoken=${formData.csrf_token}`,
@@ -33,4 +33,3 @@ export default defineEventHandler(async (event) => {
         return { error: error.message }
     }
 })
-

@@ -50,7 +50,8 @@
 <script setup>
 
 const { data } = defineProps(['data'])
-const count_page = Math.ceil(18 / 10)
+const count_page = Math.ceil(data.count / 10)
+const { offset } = useRoute().query
 const range = n => {
     let result = []
     for (let i = 0; i < n; i += 1) {
@@ -58,20 +59,18 @@ const range = n => {
     }
     return result
 }
-const range_page = range(count_page)
 
-const { query } = useRoute()
+let offset_next = offset
 let offset_prev = 0
-let offset_next = 0
 
-if (query.offset <= 0) {
-    offset_next += 10
-} if (query.offset > 0 & query.offset < 10) {
-    offset_next = Number(query.offset) + 10
-} else {
-    offset_next = Number(query.offset) + 10
-    offset_prev = Number(query.offset) - 10
+if (data.next) {
+    offset_next = new URL(data.next).searchParams.get('offset')
+
+} if (data.previous) {
+    offset_prev = new URL(data.previous).searchParams.get('offset')
 }
+
+const range_page = range(count_page)
 
 </script>
 

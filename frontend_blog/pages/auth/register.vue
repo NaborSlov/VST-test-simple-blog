@@ -61,22 +61,20 @@ const password = ref('')
 const confirm_password = ref('')
 
 async function submitForm() {
-  try {
-    await $fetch('/api/register', {
-      method: 'post',
-      body: {
-        username: username.value,
-        password: password.value,
-        confirm_password: confirm_password.value,
-      }
-    })
+  const response = await $fetch('/api/register', {
+    method: 'post',
+    body: {
+      username: username.value,
+      password: password.value,
+      confirm_password: confirm_password.value,
+    }
+  })
 
-    navigateTo('/')
+  if (response.error) {
+    throw createError({ statusMessage: response.error, statusCode: 404, fatal: true })
+  }
 
-  }
-  catch (error) {
-    console.error(error)  // написать ошибку
-  }
+  navigateTo('/')
 }
 
 definePageMeta({

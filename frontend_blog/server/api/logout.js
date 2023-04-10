@@ -6,13 +6,21 @@ export default defineEventHandler(async (event) => {
 
     const url = `${webHost}/logout/`
 
-    const response = await axios({
-        method: 'get',
-        url: url,
-        headers: {
-            "cookie": `sessionid=${cookie}`
-        }
-    })
+    try {
+        const response = await axios({
+            method: 'get',
+            url: url,
+            headers: {
+                "cookie": `sessionid=${cookie}`
+            }
+        })
 
-    return { data: response.data }
+        return { data: response.data }
+    }
+    catch (error) {
+        return { error: error.message }
+    }
+
+
+    
 })

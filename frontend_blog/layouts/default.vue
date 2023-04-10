@@ -39,20 +39,19 @@
 
 <script setup>
 async function logoutFunc() {
-    try {
-        const cookie = useCookie('sessionid')
-        await $fetch(`/api/logout`, {
-            method: "post",
-            body: {
-                cookie: cookie.value
-            }
-        })
+    const cookie = useCookie('sessionid')
+    const response = await $fetch(`/api/logout`, {
+        method: "post",
+        body: {
+            cookie: cookie.value
+        }
+    })
 
-        navigateTo('/')
+    if (response.error) {
+        throw createError({ statusMessage: response.error, statusCode: 404, fatal: true })
     }
-    catch (error) {
-        createError(error)
-    }
+
+    navigateTo('/')
 }
 
 </script>

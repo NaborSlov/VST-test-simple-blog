@@ -27,18 +27,23 @@
 
 <script setup>
 const cookie = useCookie('sessionid')  // Написать пагинацию, активные ссылки готовы
+const { offset } = useRoute().query
 
-const response = await $fetch(`/api/blogs/getBlog`, {
+const response = await $fetch(`/api/blogs/getAllBlogs`, {
     method: "post",
     body: {
+        offset: offset,
         cookie: cookie.value
     }
 })
 
+if (response.error) {
+    throw createError({ statusMessage: response.error, statusCode: 404, fatal: true })
+}
+
+
 if (response.auth === false) {
     navigateTo('/auth/')
-} if (response.error) {
-    throw createError()  // Написать страницу ошибок
 }
 
 const data_pagination = response.data

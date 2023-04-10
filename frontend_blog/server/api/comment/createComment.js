@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
     const formData = await readBody(event)
     const { webHost } = useRuntimeConfig()
 
-    let url = `${webHost}/api/blogs/`
+    let url = `${webHost}/api/comment/`
 
     try {
         const { data } = await axios({
@@ -16,9 +16,8 @@ export default defineEventHandler(async (event) => {
                 "x-csrftoken": formData.csrf_token,
             },
             data: {
-                title: formData.title,
-                theme: formData.theme,
-                description: formData.description
+                blog: formData.id_blog,
+                description: formData.comment
             },
         })
 
@@ -32,5 +31,5 @@ export default defineEventHandler(async (event) => {
         }
         return { error: error.message }
     }
-})
 
+})

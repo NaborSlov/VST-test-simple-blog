@@ -21,13 +21,14 @@
                 <p class="lead">{{ response.data.description }}</p>
                 <section class="not-format">
                     <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Комментарий ({{ response.data.comments.length }})</h2>
+                        <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Комментарий ({{
+                            response.data.comments.length }})</h2>
                     </div>
-                    <form class="mb-6">
+                    <form class="mb-6" @submit.prevent="createComment(response.data.id)">
                         <div
                             class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                             <label for="comment" class="sr-only">Your comment</label>
-                            <textarea id="comment" rows="6"
+                            <textarea id="comment" rows="6" v-model="comment"
                                 class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
                                 required></textarea>
                         </div>
@@ -37,7 +38,7 @@
                         </button>
                     </form>
                     <div v-for="comment in response.data.comments">
-                        <Comment :comment="comment"/>
+                        <Comment :comment="comment" />
                     </div>
                 </section>
             </article>
@@ -46,6 +47,8 @@
 </template>
 
 <script setup>
+const comment = ref('')
+
 const { id } = useRoute().params
 const cookie = useCookie('sessionid')
 
@@ -56,14 +59,42 @@ const response = await $fetch(`/api/blogs/getBlog?id=${id}`, {  // Написа�
     }
 })
 
+if (response.error) {
+    throw createError({ statusMessage: response.error, statusCode: 404, fatal: true })
+}
+
 if (response.auth === false) {
     navigateTo('/auth/')
-} if (response.error) {
-    createError()  // Написать страницу ошибок
 }
 
 let date = new Date(Date.parse(response.data.created))
 date = date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'numeric', year: 'numeric' })
+
+
+async function createComment(id_blog) {
+    const csrf_token = useCookie('csrftoken')
+    const { path } = useRoute()
+
+    const response = await $fetch("/api/comment/createComment", {
+        method: 'post',
+        body: {
+            id_blog: id_blog,
+            comment: comment.value,
+            cookie: cookie.value,
+            csrf_token: csrf_token.value,
+        }
+    })
+
+    if (response.error) {
+        throw createError({ statusMessage: response.error, statusCode: 404, fatal: true })
+    }
+
+    if (response.auth === false) {
+        navigateTo('/auth/')
+    }
+
+    navigateTo(path, { external: true })
+}
 
 </script>
 
