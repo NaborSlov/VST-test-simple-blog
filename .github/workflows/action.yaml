@@ -1,0 +1,74 @@
+name: Build_and_deploy_action
+on: ['push']
+jobs:
+  build_and_push_frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: clone code
+        uses: actions/checkout@v3
+      - name: docker build
+        run: | 
+          cd frontend_blog
+          docker build -t naborslov/vts-blog-frontend:$GITHUB_REF_NAMEfront-$GITHUB_RUN_ID .
+      - name: login to Docker hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: docker push
+        run: docker push naborslov/vts-blog-frontend:$GITHUB_REF_NAMEfront-$GITHUB_RUN_ID
+
+  build_and_push_backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: clone code
+        uses: actions/checkout@v3
+      - name: docker build
+        run: | 
+          cd backend_blog
+          docker build -t naborslov/vts-blog-frontend:$GITHUB_REF_NAMEback-$GITHUB_RUN_ID .
+      - name: login to Docker hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: docker push
+        run: docker push naborslov/vts-blog-frontend:$GITHUB_REF_NAMEback-$GITHUB_RUN_ID
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build_and_push_backend, build_and_push_frontend]
+    env:
+      DEBUG: ${{ secrets.DEBUG }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      TIME_ZONE: ${{ secrets.TIME_ZONE }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+    steps:
+      - name: clone code
+        uses: actions/checkout@v3
+      - name: render configs
+        run: |
+          mkdir deploy
+          cat docker-compose-ci.yaml | envsubst > deploy/docker-compose.yaml
+      - name: clone files to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "deploy/docker-compose.yaml"
+          target: "app"
+          strip_components: 1
+      - name: run docker-compose
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd app
+            docker compose up -d

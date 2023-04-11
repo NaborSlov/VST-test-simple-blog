@@ -1,6 +1,10 @@
 FROM node:18-slim
 
 WORKDIR app/
+
+ENV BACKEND_HOST "http://backend:8000"
+
+#COPY frontend_blog/ .
 COPY . .
 
 RUN npm ci && npm cache clean --force
