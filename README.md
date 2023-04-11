@@ -101,3 +101,6 @@ npm run start
 ```shell
 docker compose up -d
 ```
+
+
+# Проект доступен в облаке по адресу https://158.160.58.142/

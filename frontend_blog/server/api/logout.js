@@ -1,17 +1,18 @@
 import axios from "axios"
 
 export default defineEventHandler(async (event) => {
-    const cookie = getCookie(event, 'sessionid')
+    const formData = await readBody(event)
     const { webHost } = useRuntimeConfig()
 
     const url = `${webHost}/logout/`
 
     try {
         const response = await axios({
-            method: 'get',
+            method: 'delete',
             url: url,
             headers: {
-                "cookie": `sessionid=${cookie}`
+                "cookie": `sessionid=${formData.cookie};csrftoken=${formData.csrf_token}`,
+                "x-csrftoken": formData.csrf_token,
             }
         })
 

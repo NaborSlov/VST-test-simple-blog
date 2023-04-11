@@ -19,9 +19,9 @@ class UserAuthenticationView(CreateAPIView):
 
 
 class UserLogoutView(APIView):
-    http_method_names = ['get']
+    http_method_names = ['delete']
 
-    def get(self, request, *args, **kwargs):
+    def delete(self, request, *args, **kwargs):
         """
         Выход из сессии
         """

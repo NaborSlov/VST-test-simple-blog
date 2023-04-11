@@ -40,10 +40,12 @@
 <script setup>
 async function logoutFunc() {
     const cookie = useCookie('sessionid')
+    const xcsrftoken = useCookie('csrftoken')
     const response = await $fetch(`/api/logout`, {
         method: "post",
         body: {
-            cookie: cookie.value
+            cookie: cookie.value,
+            csrf_token: xcsrftoken.value
         }
     })
 
