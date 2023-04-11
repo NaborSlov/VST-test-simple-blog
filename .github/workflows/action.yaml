@@ -26,14 +26,14 @@ jobs:
       - name: docker build
         run: | 
           cd backend_blog
-          docker build -t naborslov/vts-blog-frontend:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
+          docker build -t naborslov/vts-blog-backend:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
       - name: login to Docker hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: docker push
-        run: docker push naborslov/vts-blog-frontend:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+        run: docker push naborslov/vts-blog-backend:$GITHUB_REF_NAME-$GITHUB_RUN_ID
 
   deploy:
     runs-on: ubuntu-latest
