@@ -26,6 +26,12 @@ export default defineEventHandler(async (event) => {
 
     }
     catch (error) {
+        if (error.response !== undefined) {
+            if (error.response.status === 400) {
+                return { bad: true }
+            }
+        }
+
         return { error: error.message }
     }
 })

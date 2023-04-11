@@ -1,0 +1,10 @@
+FROM python:3.11-slim
+
+WORKDIR app/
+COPY backend_blog/requirements.txt .
+
+RUN pip install -r requirements.txt
+
+COPY backend_blog/ .
+
+CMD gunicorn backend_blog.wsgi -b 0.0.0.0:8000

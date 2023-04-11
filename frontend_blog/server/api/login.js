@@ -20,9 +20,15 @@ export default defineEventHandler(async (event) => {
             setCookie(event, key, value)
         })
 
-        return { data: response.data }
+        return { data: response.data, auth: true }
     }
     catch (error) {
-        return {error: error.message}
+        if (error.response !== undefined) {
+            if (error.response.status === 403) {
+                return { auth: false }
+            }
+        }
+
+        return { error: error.message }
     }
 })

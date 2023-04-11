@@ -5,7 +5,7 @@
                 <NuxtLink :to="`/`">
                     <p class="flex items-center">
                         <img src="https://flowbite.com/docs/images/logo.svg" class="mr-3 h-6 sm:h-9" alt="Flowbite Logo" />
-                        <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">VTC-blog</span>
+                        <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">VST-blog</span>
                     </p>
                 </NuxtLink>
                 <div class="flex items-center lg:order-2">
@@ -51,7 +51,7 @@ async function logoutFunc() {
         throw createError({ statusMessage: response.error, statusCode: 404, fatal: true })
     }
 
-    navigateTo('/')
+    navigateTo('/auth/')
 }
 
 </script>

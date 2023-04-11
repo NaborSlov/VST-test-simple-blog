@@ -41,7 +41,6 @@ if (response.error) {
     throw createError({ statusMessage: response.error, statusCode: 404, fatal: true })
 }
 
-
 if (response.auth === false) {
     navigateTo('/auth/')
 }

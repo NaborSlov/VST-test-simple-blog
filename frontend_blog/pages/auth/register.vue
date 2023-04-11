@@ -4,7 +4,7 @@
       <NuxtLink :to="`/auth/`">
         <p class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
           <img class="w-8 h-8 mr-2" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg" alt="logo">
-          VTC-blog
+          VST-blog
         </p>
       </NuxtLink>
       <div
@@ -69,6 +69,10 @@ async function submitForm() {
       confirm_password: confirm_password.value,
     }
   })
+
+  if (response.bad) {
+    navigateTo('/auth/register')
+  }
 
   if (response.error) {
     throw createError({ statusMessage: response.error, statusCode: 404, fatal: true })
